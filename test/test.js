@@ -57,12 +57,52 @@ describe("mmoize", function() {
             f("a"),
             f("b"),
             f("c"),
+            f("d"),
             f("a"),
             f("b"),
             f("c"),
+            f("d"),
         ]).then((values) => {
-            assert.equal(n, 3);
-            assert.deepEqual(values, [1,2,3,1,2,3]);
+            assert.equal(n, 4);
+            assert.deepEqual(values, [1,2,3,4,1,2,3,4]);
+        });
+    });
+
+    it("should limit cache size (worst case)", function() {
+        let n = 0;
+        const f = mmoize((key) => n += 1, {size:3});
+
+        return Promise.all([
+            f("a"),
+            f("b"),
+            f("c"),
+            f("d"),
+            f("a"),
+            f("b"),
+            f("c"),
+            f("d"),
+        ]).then((values) => {
+            assert.equal(n, 8);
+            assert.deepEqual(values, [1,2,3,4,5,6,7,8]);
+        });
+    });
+
+    it("should limit cache size", function() {
+        let n = 0;
+        const f = mmoize((key) => n += 1, {size:3});
+
+        return Promise.all([
+            f("a"),
+            f("b"),
+            f("c"),
+            f("d"),
+            f("d"),
+            f("c"),
+            f("b"),
+            f("a"),
+        ]).then((values) => {
+            assert.equal(n, 5);
+            assert.deepEqual(values, [1,2,3,4,4,3,2,5]);
         });
     });
 });
