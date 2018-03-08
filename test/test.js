@@ -48,4 +48,21 @@ describe("mmoize", function() {
             assert.equal(n, 1);
         });
     });
+
+    it("should cache several values", function() {
+        let n = 0;
+        const f = mmoize((key) => n += 1);
+
+        return Promise.all([
+            f("a"),
+            f("b"),
+            f("c"),
+            f("a"),
+            f("b"),
+            f("c"),
+        ]).then((values) => {
+            assert.equal(n, 3);
+            assert.deepEqual(values, [1,2,3,1,2,3]);
+        });
+    });
 });
