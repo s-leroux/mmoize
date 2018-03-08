@@ -27,7 +27,7 @@ describe("README examples", function() {
                 else {
                     vm.runInNewContext(code, {
                         require: (id) => ((id) === "mmoize") ? require('../index.js') : require(id),
-//                        console: console,
+                        console: console,
                     }, {
                         filename: FNAME,
                         lineOffset: lineOffset,
