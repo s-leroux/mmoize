@@ -1,3 +1,4 @@
+const Promise = require('bluebird');
 const debug = require("debug")("mmoize:tests");
 
 const assert = require('chai').assert;
@@ -103,6 +104,28 @@ describe("mmoize", function() {
         ]).then((values) => {
             assert.equal(n, 5);
             assert.deepEqual(values, [1,2,3,4,4,3,2,5]);
+        });
+    });
+
+    it("should handle interleaved/concurrent access", function() {
+        var readFile = Promise.promisify(require("fs").readFile);
+
+        let n = 0;
+        const f = mmoize((key) => { n += 1; return readFile(key, "utf8"); }, {size:3});
+
+        return Promise.all([
+            f("./test/data/a"),
+            f("./test/data/a"),
+            f("./test/data/b"),
+            f("./test/data/c"),
+            f("./test/data/d"),
+            f("./test/data/d"),
+            f("./test/data/c"),
+            f("./test/data/b"),
+            f("./test/data/a"),
+        ]).then((values) => {
+            assert.equal(n, 5);
+            assert.deepEqual(values, ["A","A","B","C","D","D","C","B","A"]);
         });
     });
 });
