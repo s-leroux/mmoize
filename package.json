@@ -13,7 +13,9 @@
   "keywords": [
     "cache",
     "memoization",
-    "memoize"
+    "memoize",
+    "promise",
+    "async"
   ],
   "author": "Sylvain Leroux <sylvain@chicoree.fr>",
   "license": "MIT",

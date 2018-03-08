@@ -108,7 +108,7 @@ describe("mmoize", function() {
     });
 
     it("should handle interleaved/concurrent access", function() {
-        var readFile = Promise.promisify(require("fs").readFile);
+        const readFile = Promise.promisify(require("fs").readFile);
 
         let n = 0;
         const f = mmoize((key) => { n += 1; return readFile(key, "utf8"); }, {size:3});
