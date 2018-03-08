@@ -1,6 +1,6 @@
 {
   "name": "mmoize",
-  "version": "0.0.3",
+  "version": "1.0.0",
   "description": "Simple cache/single-argument memoiztion library",
   "main": "index.js",
   "scripts": {
