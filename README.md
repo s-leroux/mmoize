@@ -20,6 +20,9 @@ The first argument is a function used to create missing value from
 a key.
 
 * `option.size` is the maximum cache size
+* `options.valid({key, value})` a user-defined function invoked after a value has been retrieved from
+the cache. If this function returns `true` the cached value is assumed to be still valid. Otherwise, a
+new value will be obtained by calling `fn(key)`.
 
 Each invocation of the returned function will produce a _promise_ that will
 be fulfilled either by the value in cache _or_ by the value returned by `fn(key)`.

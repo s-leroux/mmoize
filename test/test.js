@@ -128,4 +128,38 @@ describe("mmoize", function() {
             assert.deepEqual(values, ["A","A","B","C","D","D","C","B","A"]);
         });
     });
+
+    it("should cache rejections", function() {
+        const readFile = Promise.promisify(require("fs").readFile);
+
+        let n = 0;
+        const f = mmoize((key) => { n += 1; return readFile(key, "utf8"); }, {size:3});
+
+        return f('./test/data/missing')
+            .then(() => assert.fail())
+            .catch(() => debug("NOT FOUND (expected)"))
+            .then(() => f('./test/data/missing'))
+            .then(() => assert.fail())
+            .catch(() => debug("NOT FOUND (expected)"))
+            .then(() => assert.equal(n, 1));
+    });
+
+    it("should accept a cache validation function", function() {
+        const readFile = Promise.promisify(require("fs").readFile);
+
+        let n = 0;
+        const f = mmoize((key) => { n += 1; return readFile(key, "utf8"); }, {
+            valid: function(node) {
+                return !node.value.isRejected();
+            },
+        });
+
+        return f('./test/data/missing')
+            .then(() => assert.fail())
+            .catch(() => debug("NOT FOUND (expected)"))
+            .then(() => f('./test/data/missing'))
+            .then(() => assert.fail())
+            .catch(() => debug("NOT FOUND (expected)"))
+            .then(() => assert.equal(n, 2));
+    });
 });
