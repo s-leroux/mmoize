@@ -1,4 +1,4 @@
-getpro
+mmoize
 ======
 
 A simple cache/single-argument memoization library.
