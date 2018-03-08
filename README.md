@@ -13,18 +13,17 @@ A simple cache/single-argument memoization library.
 
 ## API
 
-### const f = mmoize(function, [options])
+### const mm = mmoize(fn, [options])
 
 Create a new cache instance.
 The first argument is a function used to create missing value from
 a key.
 
-`option.size` is the maximum cache size
+* `option.size` is the maximum cache size
 
-### f.get(key)
-Return a promise that will resolve to the value associated with `key`.
+Each invocation of the returned function will produce a _promise_ that will
+be fulfilled either by the value in cache _or_ by the value returned by `fn(key)`.
 
-If the value is not already in cache, the function passed at cache creation time is invoked to get it.
 Newly created values are always stored in the cache. If there isn't enough room left,
 the least recently used values is discarded.
 
@@ -38,18 +37,18 @@ the least recently used values is discarded.
     const readFile = Promise.promisify(require("fs").readFile);
 
     let n = 0;
-    const f = mmoize((key) => { n += 1; return readFile(key, "utf8"); });
+    const read = mmoize((key) => { n += 1; return readFile(key, "utf8"); });
 
     // Will actually read the file only once
-    f("./test/data/a")
+    read("./test/data/a")
         .then(console.log)
         .then(() => assert.equal(n, 1));
 
-    f("./test/data/a")
+    read("./test/data/a")
         .then(console.log)
         .then(() => assert.equal(n, 1));
 
-    f("./test/data/a")
+    read("./test/data/a")
         .then(console.log)
         .then(() => assert.equal(n, 1));
 ```
@@ -61,18 +60,18 @@ the least recently used values is discarded.
     const mmoize = require('mmoize');
     const readFile = Promise.promisify(require("fs").readFile);
 
-    const f = mmoize((key) => readFile(key, "utf8"), {size: 3 });
+    const read = mmoize((key) => readFile(key, "utf8"), {size: 3 });
 
     Promise.all([
-        f("./test/data/a"),
-        f("./test/data/a"),
-        f("./test/data/b"),
-        f("./test/data/c"),
-        f("./test/data/d"),
-        f("./test/data/d"),
-        f("./test/data/c"),
-        f("./test/data/b"),
-        f("./test/data/a"),
+        read("./test/data/a"),
+        read("./test/data/a"),
+        read("./test/data/b"),
+        read("./test/data/c"),
+        read("./test/data/d"),
+        read("./test/data/d"),
+        read("./test/data/c"),
+        read("./test/data/b"),
+        read("./test/data/a"),
     ]).then(console.log);
 ```
 
