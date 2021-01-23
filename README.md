@@ -79,8 +79,8 @@ the least recently used values is discarded.
 ```
 
 ## Node version
-Require NodeJS >= v7.0
-Tested with v7.0, v7.6 and v8.9
+Require NodeJS >= v10.0
+Tested with v10.0 and v14.15
  
 ## License 
 
